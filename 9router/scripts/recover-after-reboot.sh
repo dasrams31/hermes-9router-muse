@@ -39,7 +39,7 @@ for t in "$WS"/scripts/*.timer; do
 done
 
 # 3. Enable + start services (tunnel needs SSH approval on first connect)
-for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel minecraft minecraft-tunnel mc-portal mc-portal-tunnel; do
+for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel minecraft minecraft-tunnel mc-portal mc-portal-tunnel muse-bot; do
   if ! systemctl is-enabled "$s.service" >/dev/null 2>&1; then
     systemctl enable "$s.service" 2>/dev/null
   fi
