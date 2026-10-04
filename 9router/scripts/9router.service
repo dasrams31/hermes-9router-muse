@@ -1,0 +1,15 @@
+[Unit]
+Description=9Router - AI Router
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/node /usr/lib/node_modules/9router/cli.js --port 20128 --no-browser --tray
+Restart=always
+RestartSec=5
+Environment=HOME=/home/hatch
+WorkingDirectory=/home/hatch
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=Reverse SSH tunnel for MC portal (18082)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/ssh -N -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -o ConnectTimeout=30 -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/home/hatch/workspace/9router-setup/ssh/known_hosts -i /home/hatch/workspace/9router-setup/ssh/tunnel_9router -R 127.0.0.1:18082:127.0.0.1:8082 ubuntu@43.156.63.114
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

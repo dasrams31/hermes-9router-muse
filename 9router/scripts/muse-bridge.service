@@ -1,0 +1,15 @@
+[Unit]
+Description=Muse Bridge - OpenAI-compatible bridge for Meta Model API
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/node /home/hatch/workspace/9router-setup/bridge/bridge.js
+Restart=always
+RestartSec=5
+EnvironmentFile=/home/hatch/workspace/9router-setup/bridge/.env
+WorkingDirectory=/home/hatch/workspace/9router-setup/bridge
+
+[Install]
+WantedBy=multi-user.target

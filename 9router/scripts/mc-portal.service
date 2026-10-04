@@ -1,0 +1,15 @@
+[Unit]
+Description=Muse SMP admin portal (127.0.0.1:8082)
+After=network-online.target minecraft.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/mc-portal
+ExecStart=/usr/bin/python3 /home/hatch/workspace/mc-portal/portal.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

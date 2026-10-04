@@ -1,0 +1,15 @@
+[Unit]
+Description=Muse SMP bot watcher (auto join/leave bot Muse)
+After=network-online.target minecraft.service mc-portal.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/mc-portal/muse-bot
+ExecStart=/bin/bash /home/hatch/workspace/mc-portal/muse-bot/muse-bot-watch.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+[Unit]
+Description=Hermes Gateway health watchdog
+
+[Service]
+Type=oneshot
+User=root
+ExecStart=/home/hatch/workspace/9router-setup/scripts/hermes-gateway-health.sh

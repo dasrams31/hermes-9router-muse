@@ -1,0 +1,14 @@
+[Unit]
+Description=Web server for blog.ramadanadipa.com (port 8081)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/python3 -m http.server 8081 --bind 127.0.0.1 --directory /home/hatch/workspace/www/blog.ramadanadipa.com
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

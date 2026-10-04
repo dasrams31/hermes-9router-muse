@@ -1,0 +1,26 @@
+[Unit]
+Description=Hermes Gateway - messaging gateway (Telegram) [hardened]
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+# Hardened launcher: flock anti-duplicate, config check, restart logging.
+ExecStart=/home/hatch/workspace/9router-setup/scripts/hermes-gateway-run.sh
+# Auto-restart on crash/exit; back off to avoid hot loops.
+Restart=always
+RestartSec=10
+StartLimitIntervalSec=300
+StartLimitBurst=5
+# Preserve runtime environment and proxy config.
+Environment=HOME=/home/hatch
+Environment=PATH=/home/hatch/.local/bin:/usr/local/bin:/usr/bin:/bin
+EnvironmentFile=/home/hatch/.hermes/proxy.env
+WorkingDirectory=/home/hatch
+# Graceful stop first, then kill.
+KillMode=mixed
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

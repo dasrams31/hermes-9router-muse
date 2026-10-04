@@ -1,0 +1,14 @@
+[Unit]
+Description=9Router reverse SSH tunnel to public server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/ssh -N -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -o ConnectTimeout=30 -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/home/hatch/workspace/9router-setup/ssh/known_hosts -i /home/hatch/workspace/9router-setup/ssh/tunnel_9router -R 0.0.0.0:20128:127.0.0.1:20128 ubuntu@43.156.63.114
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
