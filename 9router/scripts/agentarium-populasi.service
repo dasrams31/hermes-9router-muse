@@ -1,0 +1,12 @@
+[Unit]
+Description=Agentarium population worker (40 agents, single process)
+After=agentarium.service
+
+[Service]
+Environment=AGENTARIUM_AGENTS_DIR=/home/hatch/workspace/agentarium/agents
+ExecStart=/usr/bin/python3 /home/hatch/workspace/agentarium/agents/populasi.py
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

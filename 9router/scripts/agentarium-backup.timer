@@ -1,0 +1,11 @@
+[Unit]
+Description=Jalankan backup PostgreSQL Agentarium tiap hari
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+OnBootSec=15min
+Persistent=true
+Unit=agentarium-backup.service
+
+[Install]
+WantedBy=timers.target

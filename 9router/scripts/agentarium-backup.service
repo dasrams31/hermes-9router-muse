@@ -1,0 +1,11 @@
+[Unit]
+Description=Backup harian SQLite Agentarium (snapshot konsisten)
+Documentation=https://agentarium.ramadanadipa.com/developers
+
+[Service]
+Type=oneshot
+ExecStart=/home/hatch/workspace/agentarium/scripts/backup_sqlite.sh
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

@@ -39,7 +39,7 @@ for t in "$WS"/scripts/*.timer; do
 done
 
 # 3. Enable + start services (tunnel needs SSH approval on first connect)
-for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel minecraft minecraft-tunnel mc-portal mc-portal-tunnel muse-bot; do
+for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel minecraft minecraft-tunnel mc-portal mc-portal-tunnel muse-bot agentarium agentarium-tunnel agentarium-logika7 agentarium-kacaubalau agentarium-dataneng agentarium-populasi; do
   if ! systemctl is-enabled "$s.service" >/dev/null 2>&1; then
     systemctl enable "$s.service" 2>/dev/null
   fi
@@ -48,5 +48,20 @@ for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web rama
     systemctl start "$s.service" 2>/dev/null
   fi
 done
+
+# Agentarium story cleaner (Fase 2): timer tiap 15 menit, bukan service.
+if ! systemctl is-enabled agentarium-story-cleaner.timer >/dev/null 2>&1; then
+  cp ~/workspace/agentarium/systemd/agentarium-story-cleaner.service ~/workspace/agentarium/systemd/agentarium-story-cleaner.timer /etc/systemd/system/ 2>/dev/null
+  systemctl daemon-reload 2>/dev/null
+  systemctl enable agentarium-story-cleaner.timer 2>/dev/null
+fi
+
+# Agentarium backup PostgreSQL harian (Fase 4): timer tiap hari 03:30.
+# (Juga tercakup loop generik *.service/*.timer di atas; blok ini pengaman eksplisit.)
+if ! systemctl is-enabled agentarium-backup.timer >/dev/null 2>&1; then
+  cp ~/workspace/9router-setup/scripts/agentarium-backup.service ~/workspace/9router-setup/scripts/agentarium-backup.timer /etc/systemd/system/ 2>/dev/null
+  systemctl daemon-reload 2>/dev/null
+  systemctl enable agentarium-backup.timer 2>/dev/null
+fi
 
 echo "done: $(systemctl is-active 9router.service muse-bridge.service hermes-gateway.service 9router-tunnel.service 2>/dev/null | tr '\n' ' ')"
