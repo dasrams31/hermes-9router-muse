@@ -1,0 +1,8 @@
+[Unit]
+Description=Backup harian semua repos ke GitHub
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/hatch/workspace/all-repos-backup.sh
+User=hatch

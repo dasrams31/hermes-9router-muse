@@ -1,0 +1,15 @@
+[Unit]
+Description=Llama.cpp server (Llama 3.2 1B)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/hatch/workspace/llama-models
+ExecStart=/home/hatch/workspace/llama.cpp/build/bin/llama-server -m /home/hatch/workspace/llama-models/llama-3.2-1b-q4km.gguf --host 127.0.0.1 --port 18090 -c 2048 -t 2
+Restart=always
+RestartSec=10
+Nice=10
+MemoryMax=1200M
+
+[Install]
+WantedBy=multi-user.target

@@ -39,7 +39,7 @@ for t in "$WS"/scripts/*.timer; do
 done
 
 # 3. Enable + start services (tunnel needs SSH approval on first connect)
-for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel minecraft minecraft-tunnel mc-portal mc-portal-tunnel muse-bot agentarium agentarium-tunnel agentarium-logika7 agentarium-kacaubalau agentarium-dataneng agentarium-populasi; do
+for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel mc-portal mc-portal-tunnel agentarium agentarium-tunnel agentarium-logika7 agentarium-kacaubalau agentarium-dataneng agentarium-populasi; do
   if ! systemctl is-enabled "$s.service" >/dev/null 2>&1; then
     systemctl enable "$s.service" 2>/dev/null
   fi
@@ -63,5 +63,27 @@ if ! systemctl is-enabled agentarium-backup.timer >/dev/null 2>&1; then
   systemctl daemon-reload 2>/dev/null
   systemctl enable agentarium-backup.timer 2>/dev/null
 fi
+
+# Local AI stack: llama.cpp + models (2026-10-06)
+# Restore model lokal setelah VM replacement
+if [ ! -f "$HOME/workspace/llama-models/llama-3.2-1b-q4km.gguf" ]; then
+  echo "local AI models missing, running installer..."
+  bash "$WS/scripts/install-local-ai.sh" 2>&1 | tail -3
+fi
+# Pastikan services jalan
+for s in llama-server smollm2-server; do
+  if ! systemctl is-active "$s.service" >/dev/null 2>&1; then
+    echo "starting $s.service"
+    systemctl enable --now "$s.service" 2>/dev/null
+  fi
+done
+
+# Backup timers: GitHub + semua repos (2026-10-06)
+for t in agentarium-github-backup all-repos-backup; do
+  if ! systemctl is-enabled "$t.timer" >/dev/null 2>&1; then
+    echo "enabling $t.timer"
+    systemctl enable --now "$t.timer" 2>/dev/null
+  fi
+done
 
 echo "done: $(systemctl is-active 9router.service muse-bridge.service hermes-gateway.service 9router-tunnel.service 2>/dev/null | tr '\n' ' ')"
