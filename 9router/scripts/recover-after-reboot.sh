@@ -38,6 +38,18 @@ for t in "$WS"/scripts/*.timer; do
   fi
 done
 
+# 2c. Kill stale non-systemd bridge processes (bridge-hook workers sometimes
+# start `node bridge.js` manually during a reset gap; the leftover holds
+# port 18089 and makes the systemd unit crash-loop with EADDRINUSE).
+BRIDGE_MAINPID=$(systemctl show muse-bridge.service -p MainPID --value 2>/dev/null)
+for pid in $(pgrep -f "node .*/bridge/bridge.js" 2>/dev/null); do
+  if [ "$pid" != "$BRIDGE_MAINPID" ]; then
+    echo "killing stale bridge process $pid (not systemd MainPID $BRIDGE_MAINPID)"
+    kill "$pid" 2>/dev/null
+  fi
+done
+sleep 2
+
 # 3. Enable + start services (tunnel needs SSH approval on first connect)
 for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel mc-portal mc-portal-tunnel agentarium agentarium-tunnel agentarium-logika7 agentarium-kacaubalau agentarium-dataneng agentarium-populasi; do
   if ! systemctl is-enabled "$s.service" >/dev/null 2>&1; then
