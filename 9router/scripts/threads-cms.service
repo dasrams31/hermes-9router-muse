@@ -1,0 +1,15 @@
+[Unit]
+Description=Threads CMS v2 dashboard + scheduler (port 8455)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/threads-cms-v2
+ExecStart=/home/hatch/workspace/threads-cms-v2/.venv/bin/python /home/hatch/workspace/threads-cms-v2/server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
