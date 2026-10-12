@@ -72,7 +72,7 @@ plugins:
 model:
   # Default model to use (can be overridden with --model flag)
   # Both "default" and "model" work as the key name here.
-  default: "muse"
+  default: "soyuzz"
 
   # Inference provider selection:
   #   "auto"         - Auto-detect from credentials (default)
@@ -2320,3 +2320,6 @@ updates:
 #   # This runs ONCE per process at startup, so it cannot replace a credential
 #   # that expires mid-session. For a single provider whose token needs
 #   # re-minting during a session, use `providers.<name>.key_cmd` instead.
+onboarding:
+  seen:
+    tool_progress_prompt: true

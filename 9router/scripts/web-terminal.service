@@ -1,0 +1,17 @@
+[Unit]
+Description=Web terminal (ttyd) on 127.0.0.1:8091
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch
+Environment=HOME=/home/hatch
+EnvironmentFile=/home/hatch/workspace/web-terminal/config/env
+ExecStart=/home/hatch/workspace/bin/ttyd --interface 127.0.0.1 --port 8091 --credential ${TTYD_USER}:${TTYD_PASS} --writable /bin/bash -l
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

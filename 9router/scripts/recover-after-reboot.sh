@@ -51,7 +51,7 @@ done
 sleep 2
 
 # 3. Enable + start services (tunnel needs SSH approval on first connect)
-for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel mc-portal mc-portal-tunnel agentarium agentarium-tunnel agentarium-logika7 agentarium-kacaubalau agentarium-dataneng agentarium-populasi threads-cms threads-cms-tunnel; do
+for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel mc-portal mc-portal-tunnel agentarium agentarium-tunnel agentarium-logika7 agentarium-kacaubalau agentarium-dataneng agentarium-populasi threads-cms threads-cms-tunnel web-terminal web-terminal-tunnel; do
   if ! systemctl is-enabled "$s.service" >/dev/null 2>&1; then
     systemctl enable "$s.service" 2>/dev/null
   fi
