@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "id": "vm-reset-watchdog",
+  "enabled": true,
+  "script_path": "~/hooks/scripts/vm-reset-watchdog.sh",
+  "prompt": "Watchdog VM-reset fired: satu atau lebih service penting terdeteksi down 2x berturut-turut (payload berisi daftarnya). Kemungkinan VM baru saja di-reset (provider mengganti VM, /etc ikut terhapus).\n\nLakukan:\n1. Jalankan `bash /home/hatch/workspace/9router-setup/scripts/recover-after-reboot.sh` (idempotent, aman diulang).\n2. Tunggu ~60 detik, lalu verifikasi: `systemctl is-active` untuk service yang down, dan `curl -s -m 10 -o /dev/null -w \"%{http_code}\" https://peka.ai.id/`.\n3. Jika systemctl tidak bisa dihubungi sama sekali (VM masih dalam proses penggantian), tunggu 3 menit lalu coba lagi sekali.\n\nLaporkan singkat: service apa yang pulih, apa yang masih bermasalah. Hanya minta bantuan user jika ada yang gagal 2x (mis. tunnel SSH butuh approval) atau ada error yang butuh keputusannya. Jangan laporkan hal rutin yang sudah pulih normal.",
+  "poll_interval_secs": 60,
+  "script_timeout_secs": 30,
+  "delivery": {
+    "surface": "side_chat",
+    "to": "1be55cee-93f2-45ec-a551-beb58176d740"
+  },
+  "presentation_locale": "en-US",
+  "created_at_ms": 1791904446784,
+  "updated_at_ms": 1791904657915
+}

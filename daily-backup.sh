@@ -12,6 +12,11 @@ cp "$HOME/workspace/9router-setup/bridge/bridge.js" "$S/9router/bridge/"
 cp "$HOME/workspace/9router-setup/backup/README.md" "$S/9router/"
 cp "$HOME/.hermes/config.yaml" "$HOME/.hermes/SOUL.md" "$S/hermes/"
 
+# Watchdog hook VM-reset (dibuat 2026-10-13)
+mkdir -p "$S/hooks/scripts" "$S/hooks/definitions"
+cp "$HOME/hooks/scripts/vm-reset-watchdog.sh" "$S/hooks/scripts/" 2>/dev/null || true
+cp "$HOME/hooks/definitions/vm-reset-watchdog.json" "$S/hooks/definitions/" 2>/dev/null || true
+
 cd "$S"
 git add -A
 if git diff --cached --quiet; then
