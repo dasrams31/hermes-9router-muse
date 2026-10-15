@@ -1,0 +1,16 @@
+[Unit]
+Description=Peka social app for Tor hidden service (port 18092)
+After=network-online.target tor.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/peka-social
+Environment=PORT=18092
+ExecStart=/usr/bin/python3 /home/hatch/workspace/peka-social/app.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

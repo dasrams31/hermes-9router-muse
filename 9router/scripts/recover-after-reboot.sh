@@ -51,7 +51,7 @@ done
 sleep 2
 
 # 3. Enable + start services (tunnel needs SSH approval on first connect)
-for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel mc-portal mc-portal-tunnel agentarium agentarium-tunnel agentarium-logika7 agentarium-kacaubalau agentarium-dataneng agentarium-populasi threads-cms threads-cms-tunnel web-terminal web-terminal-tunnel peka-web peka-tunnel; do
+for s in 9router muse-bridge hermes-gateway 9router-tunnel ramadanadipa-web ramadanadipa-tunnel blog-web blog-tunnel mc-portal mc-portal-tunnel agentarium agentarium-tunnel agentarium-logika7 agentarium-kacaubalau agentarium-dataneng agentarium-populasi threads-cms threads-cms-tunnel web-terminal web-terminal-tunnel peka-web peka-tunnel tor peka-social aeterra-provider; do
   if ! systemctl is-enabled "$s.service" >/dev/null 2>&1; then
     systemctl enable "$s.service" 2>/dev/null
   fi
@@ -97,5 +97,65 @@ for t in agentarium-github-backup all-repos-backup; do
     systemctl enable --now "$t.timer" 2>/dev/null
   fi
 done
+
+
+# Peka social Tor hidden service (2026-10-16)
+# /etc/tor and /var/lib/tor are ephemeral; keys persist in ~/workspace.
+if ! dpkg -l tor 2>/dev/null | grep -q "^ii"; then
+  echo "reinstalling tor..."
+  # Ensure package lists exist; drop dead mirrors first (cogentco hangs this network).
+  if ! apt-cache policy tor 2>/dev/null | grep -q "Candidate:"; then
+    for src in /etc/apt/sources.list /etc/apt/sources.list.d/*.sources; do
+      [ -f "$src" ] || continue
+      if grep -q "mirror.cogentco.com" "$src" 2>/dev/null; then
+        sed -i 's| http://mirror.cogentco.com/pub/linux/ubuntu||g' "$src"
+        echo "removed dead mirror from $src"
+      fi
+    done
+    timeout 180 apt-get update -qq 2>&1 | tail -2
+  fi
+  timeout 300 apt-get install -y -q tor 2>&1 | tail -1
+fi
+HSDIR=/var/lib/tor/peka-social
+KEYSRC=/home/hatch/workspace/peka-social/tor-keys/pekaheqjbfgs3neiuyllbenxw7yimcfjainydksvko3ywvzzdtygh4id.onion
+if [ -d "$KEYSRC" ]; then
+  mkdir -p "$HSDIR"
+  # only copy if keys differ/missing (avoid clobbering live keys needlessly)
+  if ! cmp -s "$KEYSRC/hs_ed25519_secret_key" "$HSDIR/hs_ed25519_secret_key" 2>/dev/null; then
+    echo "deploying peka-social onion keys"
+    cp "$KEYSRC/hostname" "$KEYSRC/hs_ed25519_secret_key" "$KEYSRC/hs_ed25519_public_key" "$HSDIR/"
+    chown -R debian-tor:debian-tor "$HSDIR"
+    chmod 700 "$HSDIR"
+    chmod 600 "$HSDIR/hs_ed25519_secret_key" "$HSDIR/hs_ed25519_public_key"
+    chmod 644 "$HSDIR/hostname"
+    systemctl restart tor 2>/dev/null || true
+  fi
+fi
+# Aeterra onion keygen auto-resume (2026-10-16)
+# Keeps bruteforcing the aeterra* vanity key until found. One-shot: once a
+# *.onion dir exists in tor-keys/, this never fires again.
+AKEYDIR=/home/hatch/workspace/aeterra-provider/tor-keys
+if [ -z "$(ls -A "$AKEYDIR" 2>/dev/null)" ] && ! pgrep -f "mkp224o -d $AKEYDIR" >/dev/null 2>&1; then
+  if [ -x /home/hatch/workspace/mkp224o-build/mkp224o/mkp224o ]; then
+    echo "resuming aeterra onion keygen"
+    cd /home/hatch/workspace/mkp224o-build/mkp224o
+    setsid nohup ./mkp224o -d "$AKEYDIR" -n 1 aeterra >>/tmp/aeterra-keygen.log 2>&1 < /dev/null &
+  fi
+fi
+
+if ! grep -q "HiddenServiceDir /var/lib/tor/peka-social/" /etc/tor/torrc 2>/dev/null; then
+  echo "restoring peka-social torrc hidden service config"
+  {
+    echo ""
+    echo "# Egress via runtime proxy (direct Tor TLS MITMed since 2026-10-16 reset)"
+    echo "HTTPSProxy hatch-egress-proxy:3128"
+    echo "HTTPSProxyAuthenticator hatch-runtime:4e5be8d77d964524ab561b6ac6f67693"
+    echo ""
+    echo "# Peka social - Tor hidden service (managed, see ~/workspace/peka-social/)"
+    echo "HiddenServiceDir /var/lib/tor/peka-social/"
+    echo "HiddenServicePort 80 127.0.0.1:18092"
+  } >> /etc/tor/torrc
+  systemctl restart tor 2>/dev/null || true
+fi
 
 echo "done: $(systemctl is-active 9router.service muse-bridge.service hermes-gateway.service 9router-tunnel.service 2>/dev/null | tr '\n' ' ')"

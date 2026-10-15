@@ -1,0 +1,17 @@
+[Unit]
+Description=Aeterra onion provider app for Tor hidden service (port 18093)
+After=network-online.target tor.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/aeterra-provider
+Environment=PORT=18093
+Environment=MKP224O_BIN=/home/hatch/workspace/mkp224o-build/mkp224o/mkp224o
+ExecStart=/usr/bin/python3 /home/hatch/workspace/aeterra-provider/app.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
