@@ -1,0 +1,12 @@
+[Unit]
+Description=Qron QR generator for onion URLs (Tor hidden service)
+After=network.target
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/qron
+ExecStart=/usr/bin/python3 /home/hatch/workspace/qron/app.py
+Restart=always
+RestartSec=5
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Snip onion URL shortener (Tor hidden service)
+After=network.target
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/snip
+ExecStart=/usr/bin/python3 /home/hatch/workspace/snip/app.py
+Restart=always
+RestartSec=5
+[Install]
+WantedBy=multi-user.target

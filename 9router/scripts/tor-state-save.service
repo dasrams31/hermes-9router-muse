@@ -1,0 +1,5 @@
+[Unit]
+Description=Save tor guard state to persistent storage
+[Service]
+Type=oneshot
+ExecStart=/home/hatch/workspace/tor-persist/save-tor-state.sh

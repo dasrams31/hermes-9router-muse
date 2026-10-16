@@ -1,0 +1,12 @@
+[Unit]
+Description=Jot anonymous pastebin (Tor hidden service)
+After=network.target
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/jot
+ExecStart=/usr/bin/python3 /home/hatch/workspace/jot/app.py
+Restart=always
+RestartSec=5
+[Install]
+WantedBy=multi-user.target

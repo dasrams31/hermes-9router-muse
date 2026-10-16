@@ -1,0 +1,7 @@
+[Unit]
+Description=Save tor guard state hourly
+[Timer]
+OnBootSec=30min
+OnUnitActiveSec=1h
+[Install]
+WantedBy=timers.target

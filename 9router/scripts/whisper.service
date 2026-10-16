@@ -1,0 +1,14 @@
+[Unit]
+Description=Whisper anonymous chat (Tor hidden service)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/whisper
+ExecStart=/usr/bin/python3 /home/hatch/workspace/whisper/app.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
