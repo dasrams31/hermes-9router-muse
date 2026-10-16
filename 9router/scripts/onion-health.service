@@ -1,0 +1,6 @@
+[Unit]
+Description=Onion health check (Peka + Aeterra)
+
+[Service]
+Type=oneshot
+ExecStart=/home/hatch/workspace/onion-health/onion-health.sh

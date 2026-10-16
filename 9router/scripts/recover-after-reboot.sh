@@ -68,6 +68,13 @@ if ! systemctl is-enabled agentarium-story-cleaner.timer >/dev/null 2>&1; then
   systemctl enable agentarium-story-cleaner.timer 2>/dev/null
 fi
 
+# Onion health watchdog: cek Peka + Aeterra tiap 2 menit, restart yang mati.
+if ! systemctl is-enabled onion-health.timer >/dev/null 2>&1; then
+  cp ~/workspace/9router-setup/scripts/onion-health.service ~/workspace/9router-setup/scripts/onion-health.timer /etc/systemd/system/ 2>/dev/null
+  systemctl daemon-reload 2>/dev/null
+  systemctl enable --now onion-health.timer 2>/dev/null
+fi
+
 # Agentarium backup PostgreSQL harian (Fase 4): timer tiap hari 03:30.
 # (Juga tercakup loop generik *.service/*.timer di atas; blok ini pengaman eksplisit.)
 if ! systemctl is-enabled agentarium-backup.timer >/dev/null 2>&1; then
@@ -131,6 +138,12 @@ if [ -d "$KEYSRC" ]; then
     systemctl restart tor 2>/dev/null || true
   fi
 fi
+# always enforce ownership (a root-owned HSDir crash-loops tor)
+if [ -d "$HSDIR" ]; then
+  chown -R debian-tor:debian-tor "$HSDIR" 2>/dev/null || true
+  chmod 700 "$HSDIR" 2>/dev/null || true
+  chmod 600 "$HSDIR/hs_ed25519_secret_key" "$HSDIR/hs_ed25519_public_key" 2>/dev/null || true
+fi
 # Aeterra onion keygen auto-resume (2026-10-16)
 # Keeps bruteforcing the aeterra* vanity key until found. One-shot: once a
 # *.onion dir exists in tor-keys/, this never fires again.
@@ -157,5 +170,25 @@ if ! grep -q "HiddenServiceDir /var/lib/tor/peka-social/" /etc/tor/torrc 2>/dev/
   } >> /etc/tor/torrc
   systemctl restart tor 2>/dev/null || true
 fi
+
+# --- Aeterra .onion Provider hidden service (HS#2 -> 127.0.0.1:18093) ---
+AKEYSRC=/home/hatch/workspace/aeterra-provider/tor-keys/aeterramwgvpn4cfqyv5hjwxx7dlo4adpwyvfufrhxw5jtwxac3o6zad.onion
+if [ -d "$AKEYSRC" ]; then
+  mkdir -p /var/lib/tor/aeterra-provider
+  cp "$AKEYSRC/hostname" "$AKEYSRC/hs_ed25519_secret_key" "$AKEYSRC/hs_ed25519_public_key" /var/lib/tor/aeterra-provider/ 2>/dev/null || true
+  chown -R debian-tor:debian-tor /var/lib/tor/aeterra-provider 2>/dev/null || true
+  chmod 700 /var/lib/tor/aeterra-provider 2>/dev/null || true
+  chmod 600 /var/lib/tor/aeterra-provider/hs_ed25519_secret_key /var/lib/tor/aeterra-provider/hs_ed25519_public_key 2>/dev/null || true
+fi
+if ! grep -q "HiddenServiceDir /var/lib/tor/aeterra-provider/" /etc/tor/torrc 2>/dev/null; then
+  echo "restoring aeterra-provider torrc hidden service config"
+  {
+    echo ""
+    echo "# Aeterra .onion Provider - Tor hidden service (managed, see ~/workspace/aeterra-provider/)"
+    echo "HiddenServiceDir /var/lib/tor/aeterra-provider/"
+    echo "HiddenServicePort 80 127.0.0.1:18093"
+  } >> /etc/tor/torrc
+fi
+
 
 echo "done: $(systemctl is-active 9router.service muse-bridge.service hermes-gateway.service 9router-tunnel.service 2>/dev/null | tr '\n' ' ')"
