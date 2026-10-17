@@ -167,6 +167,7 @@ if ! grep -q "HiddenServiceDir /var/lib/tor/peka-social/" /etc/tor/torrc 2>/dev/
     echo "# Peka social - Tor hidden service (managed, see ~/workspace/peka-social/)"
     echo "HiddenServiceDir /var/lib/tor/peka-social/"
     echo "HiddenServicePort 80 127.0.0.1:18092"
+    echo "HiddenServiceNumIntroductionPoints 10"
   } >> /etc/tor/torrc
   systemctl restart tor 2>/dev/null || true
 fi
@@ -263,6 +264,7 @@ if ! grep -q "HiddenServiceDir /var/lib/tor/qron/" /etc/tor/torrc 2>/dev/null; t
     echo "# Qron QR generator - Tor hidden service (managed, see ~/workspace/qron/)"
     echo "HiddenServiceDir /var/lib/tor/qron/"
     echo "HiddenServicePort 80 127.0.0.1:18099"
+    echo "HiddenServiceNumIntroductionPoints 10"
   } >> /etc/tor/torrc
 fi
 
@@ -282,6 +284,7 @@ if ! grep -q "HiddenServiceDir /var/lib/tor/oracle/" /etc/tor/torrc 2>/dev/null;
     echo "# Oracle anonymous AI chat - Tor hidden service (managed, see ~/workspace/oracle/)"
     echo "HiddenServiceDir /var/lib/tor/oracle/"
     echo "HiddenServicePort 80 127.0.0.1:18098"
+    echo "HiddenServiceNumIntroductionPoints 10"
   } >> /etc/tor/torrc
 fi
 
@@ -301,6 +304,7 @@ if ! grep -q "HiddenServiceDir /var/lib/tor/onionhub/" /etc/tor/torrc 2>/dev/nul
     echo "# OnionHub landing page - Tor hidden service (managed, see ~/workspace/onionhub/)"
     echo "HiddenServiceDir /var/lib/tor/onionhub/"
     echo "HiddenServicePort 80 127.0.0.1:18097"
+    echo "HiddenServiceNumIntroductionPoints 10"
   } >> /etc/tor/torrc
 fi
 
@@ -320,6 +324,7 @@ if ! grep -q "HiddenServiceDir /var/lib/tor/snip/" /etc/tor/torrc 2>/dev/null; t
     echo "# Snip onion URL shortener - Tor hidden service (managed, see ~/workspace/snip/)"
     echo "HiddenServiceDir /var/lib/tor/snip/"
     echo "HiddenServicePort 80 127.0.0.1:18096"
+    echo "HiddenServiceNumIntroductionPoints 10"
   } >> /etc/tor/torrc
 fi
 
@@ -339,6 +344,7 @@ if ! grep -q "HiddenServiceDir /var/lib/tor/jot/" /etc/tor/torrc 2>/dev/null; th
     echo "# Jot anonymous pastebin - Tor hidden service (managed, see ~/workspace/jot/)"
     echo "HiddenServiceDir /var/lib/tor/jot/"
     echo "HiddenServicePort 80 127.0.0.1:18095"
+    echo "HiddenServiceNumIntroductionPoints 10"
   } >> /etc/tor/torrc
 fi
 
@@ -358,6 +364,7 @@ if ! grep -q "HiddenServiceDir /var/lib/tor/whisper/" /etc/tor/torrc 2>/dev/null
     echo "# Whisper anonymous chat - Tor hidden service (managed, see ~/workspace/whisper/)"
     echo "HiddenServiceDir /var/lib/tor/whisper/"
     echo "HiddenServicePort 80 127.0.0.1:18094"
+    echo "HiddenServiceNumIntroductionPoints 10"
   } >> /etc/tor/torrc
 fi
 
@@ -368,6 +375,7 @@ if ! grep -q "HiddenServiceDir /var/lib/tor/aeterra-provider/" /etc/tor/torrc 2>
     echo "# Aeterra .onion Provider - Tor hidden service (managed, see ~/workspace/aeterra-provider/)"
     echo "HiddenServiceDir /var/lib/tor/aeterra-provider/"
     echo "HiddenServicePort 80 127.0.0.1:18093"
+    echo "HiddenServiceNumIntroductionPoints 10"
   } >> /etc/tor/torrc
 fi
 
