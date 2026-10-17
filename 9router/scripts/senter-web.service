@@ -1,0 +1,15 @@
+[Unit]
+Description=Senter search engine web UI (Flask, port 18100)
+After=network.target tor@default.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/senter
+ExecStart=/home/hatch/workspace/senter/venv/bin/python /home/hatch/workspace/senter/app.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

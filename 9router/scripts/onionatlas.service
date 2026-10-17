@@ -1,0 +1,12 @@
+[Unit]
+Description=OnionAtlas landing page (Tor hidden service)
+After=network.target
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/onionatlas
+ExecStart=/usr/bin/python3 /home/hatch/workspace/onionatlas/serve.py
+Restart=always
+RestartSec=5
+[Install]
+WantedBy=multi-user.target

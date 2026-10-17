@@ -1,0 +1,15 @@
+[Unit]
+Description=Senter .onion crawler worker
+After=network.target tor@default.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/hatch/workspace/senter
+ExecStart=/home/hatch/workspace/senter/venv/bin/python /home/hatch/workspace/senter/crawler.py
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
